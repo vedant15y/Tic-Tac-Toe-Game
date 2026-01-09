@@ -1,0 +1,107 @@
+#include <stdio.h>
+
+void win(int player, int winner, char pos[]);
+
+int main() {
+    // variables in the game (game logic)
+    int winner = 0, count = 0;
+    int index, player, flag, i, k;
+    char pos[9], sign;
+
+    for (i = 0; i < 9; i++) {
+        pos[i] = ' ';
+    }
+
+    while (count < 9 && winner != 1) {
+        flag = 0;
+        // displaying the board
+        printf("\n");
+        printf(" %c | %c | %c\n", pos[0], pos[1], pos[2]);
+        printf("---+---+---\n");
+        printf(" %c | %c | %c\n", pos[3], pos[4], pos[5]);
+        printf("---+---+---\n");
+        printf(" %c | %c | %c\n", pos[6], pos[7], pos[8]);
+
+        // player definition
+        if (count % 2 == 0) {
+            sign = 'X';
+            player = 1;
+        } else {
+            sign = 'O';
+            player = 2;
+        }
+
+        // player input for selection of P1 or P2
+        printf("move for player %d (1-9): ", player);
+        if (scanf("%d", &index) != 1) {
+            int c;
+            while ((c = getchar()) != '\n' && c != EOF);
+            printf("invalid input\n");
+            continue;
+        }
+
+        // checking the input
+        if (index < 1 || index > 9) {
+            printf("allowed index is 1 to 9.\n");
+            continue;
+        }
+        // checking if the position in the matrix is already occupied
+        if (pos[index - 1] == 'X' || pos[index - 1] == 'O') {
+            printf("position is already occupied\n");
+            continue;
+        }
+        // updating the position
+        pos[index - 1] = sign;
+        count++;
+
+        // checking for winning condition
+        // row check
+        for (i = 0; i < 3; i++) {
+            if (pos[i * 3] == sign && pos[i * 3 + 1] == sign && pos[i * 3 + 2] == sign) {
+                winner = 1;
+                win(player, winner, pos);
+                break;
+            }
+        }
+        if (winner) break;
+
+        // column check
+        for (i = 0; i < 3; i++) {
+            if (pos[i] == sign && pos[i + 3] == sign && pos[i + 6] == sign) {
+                winner = 1;
+                win(player, winner, pos);
+                break;
+            }
+        }
+        if (winner) break;
+
+        // diagonal check
+        if ((pos[0] == sign && pos[4] == sign && pos[8] == sign) ||
+            (pos[2] == sign && pos[4] == sign && pos[6] == sign)) {
+            winner = 1;
+            win(player, winner, pos);
+            break;
+        }
+    }
+
+    if (!winner) {
+        win(0, 0, pos); // final board and draw
+    }
+
+}
+// display of the winning message and final board
+void win(int player, int winner, char pos[]) {
+    printf("\n");
+    printf(" %c | %c | %c\n", pos[0], pos[1], pos[2]);
+    printf("---+---+---\n");
+    printf(" %c | %c | %c\n", pos[3], pos[4], pos[5]);
+    printf("---+---+---\n");
+    printf(" %c | %c | %c\n", pos[6], pos[7], pos[8]);
+
+    if (winner) {
+        printf("player %d is the winner\n", player);
+    } else {
+        printf("match is a draw\n");
+    }
+}
+
